@@ -1,0 +1,34 @@
+{
+  "accounts": [
+    {
+      "company": "Alpha Corp",
+      "arr": 65000,
+      "feedback": "We are frustrated with a persistent bug and support has been unresponsive. Leadership is looking at alternatives."
+    },
+    {
+      "company": "Beta Logistics",
+      "arr": 120000,
+      "feedback": "The automation workflows are saving our team hours every week. We love it and we are expanding to two more departments."
+    },
+    {
+      "company": "Gamma Media",
+      "arr": 45000,
+      "feedback": "Renewal is coming up and leadership thinks it is expensive given our delayed rollout."
+    },
+    {
+      "company": "Delta Tech",
+      "arr": 220000,
+      "feedback": "Rollout is going smoothly but adoption in the field team is slow and we have a training gap."
+    },
+    {
+      "company": "Helix Group",
+      "arr": 30000,
+      "feedback": "Quarterly review went fine. Nothing further from us at this stage."
+    },
+    {
+      "company": "Meridian Health",
+      "arr": 90000,
+      "feedback": "Budget was not approved for next year, so we are not renewing. We can walk you through the reasoning."
+    }
+  ]
+}

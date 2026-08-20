@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "technical-csm-projects"
+version = "1.0.0"
+description = "Python tooling for technical customer success work"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = ["requests>=2.31,<3"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+capacity-guardian = "capacity_guardian.cli:main"
+
+[tool.setuptools]
+# Named explicitly. Without this, setuptools sees two top-level packages in
+# a flat layout (capacity_guardian and demos) and refuses to guess, so
+# `pip install .` fails outright. Only the tool is installable; the demos
+# are meant to be run from the repo.
+packages = ["capacity_guardian"]
+
+[tool.setuptools.package-data]
+capacity_guardian = ["fixtures/*.json"]
+
+[tool.pytest.ini_options]
+# Run pytest from the repo root and imports resolve without a src layout
+# or an editable install.
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

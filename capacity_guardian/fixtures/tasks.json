@@ -1,0 +1,116 @@
+{
+  "kind": "tasks",
+  "data": [
+    {
+      "id": "IEAAAAA1",
+      "title": "Enterprise migration runbook - Global Logistics NV",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAA"],
+      "dates": {"type": "Planned", "start": "2026-08-17", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 1200}
+    },
+    {
+      "id": "IEAAAAA2",
+      "title": "Q4 renewal risk review - Nordic Finance Group",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAA"],
+      "dates": {"type": "Planned", "start": "2026-08-18", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 1200}
+    },
+    {
+      "id": "IEAAAAA3",
+      "title": "API integration troubleshooting - Apex Retail",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAA"],
+      "dates": {"type": "Planned", "start": "2026-08-19", "due": "2026-08-22"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 900}
+    },
+    {
+      "id": "IEAAAAA4",
+      "title": "Refresh onboarding template",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAA"],
+      "dates": {"type": "Planned", "start": "2026-08-20", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 240}
+    },
+    {
+      "id": "IEAAAAA5",
+      "title": "Client onboarding - Meridian Health",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAB"],
+      "dates": {"type": "Planned", "start": "2026-08-17", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 480}
+    },
+    {
+      "id": "IEAAAAA6",
+      "title": "Weekly usage report automation",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAB", "KUAAAAAC"],
+      "dates": {"type": "Planned", "start": "2026-08-18", "due": "2026-08-20"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 240}
+    },
+    {
+      "id": "IEAAAAA7",
+      "title": "QBR deck - Apex Retail",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAC"],
+      "dates": {"type": "Planned", "start": "2026-08-17", "due": "2026-08-22"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 720}
+    },
+    {
+      "id": "IEAAAAA8",
+      "title": "Success plan draft - Nordic Finance",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAC"],
+      "dates": {"type": "Planned", "start": "2026-08-19", "due": "2026-08-21"}
+    },
+    {
+      "id": "IEAAAAA9",
+      "title": "Data migration validation - Helix Group",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAD"],
+      "dates": {"type": "Planned", "start": "2026-08-17", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 1440}
+    },
+    {
+      "id": "IEAAAAB1",
+      "title": "Adoption workshop prep",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAD"],
+      "dates": {"type": "Planned", "start": "2026-08-18", "due": "2026-08-22"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 480}
+    },
+    {
+      "id": "IEAAAAB2",
+      "title": "Escalation follow-up - Delta Tech",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAD"],
+      "dates": {"type": "Planned", "start": "2026-08-20", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 240}
+    },
+    {
+      "id": "IEAAAAB3",
+      "title": "Triage inbound integration questions",
+      "status": "Active",
+      "responsibleIds": [],
+      "dates": {"type": "Backlog"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 300}
+    },
+    {
+      "id": "IEAAAAB4",
+      "title": "Archive FY24 project folders",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAX"],
+      "dates": {"type": "Planned", "start": "2026-08-17", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 180}
+    },
+    {
+      "id": "IEAAAAB5",
+      "title": "Legacy SOW review",
+      "status": "Active",
+      "responsibleIds": ["KUAAAAAZ"],
+      "dates": {"type": "Planned", "start": "2026-08-18", "due": "2026-08-21"},
+      "effortAllocation": {"mode": "Basic", "totalEffort": 120}
+    }
+  ]
+}

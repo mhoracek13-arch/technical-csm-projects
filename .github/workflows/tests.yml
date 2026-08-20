@@ -33,12 +33,22 @@ jobs:
       - name: Run tests
         run: python -m pytest
 
-      - name: Smoke-test the CLI in offline mode
-        # Exit code 1 is expected here: the bundled fixtures contain an
-        # overload the team cannot absorb, and the tool signals that.
+          - name: Smoke-test the CLI and demos
+        # The bundled fixtures contain an overload the team cannot absorb, so
+        # the documented exit code is 1, not 0. Assert exact codes rather than
+        # tolerating any failure: a permissive "|| true" would happily pass
+        # while the CLI crashed with 3 (API error) or 4 (bad fixtures).
         run: |
-          python -m capacity_guardian.cli --offline || [ $? -eq 1 ]
-          python -m capacity_guardian.cli --offline --format json > /dev/null
-          python demos/meeting_actions.py > /dev/null
-          python demos/churn_signals.py > /dev/null
-          python demos/portfolio_health.py > /dev/null
+          expect_exit() {
+            local want=$1; shift
+            set +e; "$@" > /dev/null; local got=$?; set -e
+            if [ "$got" -ne "$want" ]; then
+              echo "::error::'$*' exited $got, expected $want"; exit 1
+            fi
+          }
+          expect_exit 1 python -m capacity_guardian.cli --offline
+          expect_exit 1 python -m capacity_guardian.cli --offline --format json
+          expect_exit 0 python -m capacity_guardian.cli --offline --work-days 20
+          expect_exit 0 python demos/meeting_actions.py
+          expect_exit 0 python demos/churn_signals.py
+          expect_exit 0 python demos/portfolio_health.py

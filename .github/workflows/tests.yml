@@ -38,3 +38,6 @@ jobs:
           python demos/meeting_actions.py > /dev/null
           python demos/churn_signals.py > /dev/null
           python demos/portfolio_health.py > /dev/null
+          python -m success_plan.cli --today 2026-08-20 > /dev/null
+          python -m success_plan.cli --today 2026-08-20 --format json > /dev/null
+          python -m success_plan.cli --today 2026-08-20 --fail-on-p1 > /dev/null || [ $? -eq 1 ]

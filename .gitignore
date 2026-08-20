@@ -216,3 +216,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Additions beyond GitHub's Python template ---
+
+# Secrets. The whole design point of this repo is that the Wrike token comes
+# from the environment, never from a file - so make it hard to commit one.
+*.pem
+*.key
+credentials.json
+
+# Real customer data must never be committed. The fixtures under
+# capacity_guardian/fixtures/ are synthetic and deliberately tracked.
+*_real.json
+*_export.csv
+
+# macOS
+.DS_Store

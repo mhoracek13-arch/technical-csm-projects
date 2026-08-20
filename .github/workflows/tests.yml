@@ -1,0 +1,44 @@
+name: tests
+
+on:
+  push:
+    # Both, so the workflow fires whichever name the default branch has.
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Testing the oldest supported version and the newest catches the
+        # syntax and stdlib differences that bite in between.
+        python-version: ["3.10", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check the package actually installs
+        run: pip install .
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: Smoke-test the CLI in offline mode
+        # Exit code 1 is expected here: the bundled fixtures contain an
+        # overload the team cannot absorb, and the tool signals that.
+        run: |
+          python -m capacity_guardian.cli --offline || [ $? -eq 1 ]
+          python -m capacity_guardian.cli --offline --format json > /dev/null
+          python demos/meeting_actions.py > /dev/null
+          python demos/churn_signals.py > /dev/null
+          python demos/portfolio_health.py > /dev/null

@@ -1,0 +1,315 @@
+{
+  "info": {
+    "name": "Wrike API v4 \u2014 Capacity Guardian",
+    "description": "The exact two endpoints capacity_guardian/sources.py calls, with the same query parameters, plus assertions on the response shapes the Python client depends on.\n\nSetup: set the collection variable `wrike_token` to a permanent API token from Wrike (Apps & Integrations > API). The token is stored as a secret-type variable and is never committed \u2014 the repo's .gitignore blocks credential files.\n\nThe tests here are not decoration. `Tasks \u2014 active with effort` asserts that effortAllocation comes back, which is the field the whole capacity model depends on; if Wrike changes that, the Python tool silently starts defaulting every task to 4 hours.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://www.wrike.com/api/v4",
+      "type": "string"
+    },
+    {
+      "key": "wrike_token",
+      "value": "",
+      "type": "string",
+      "description": "Permanent API token. Ships empty and must stay empty in version control. Set it in Postman, or pass it to newman with --env-var."
+    },
+    {
+      "key": "page_size",
+      "value": "500",
+      "type": "string",
+      "description": "Only /tasks paginates; /contacts rejects this parameter."
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{wrike_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// pm.variables resolves across local -> data -> environment ->",
+          "// collection -> global. pm.collectionVariables would see only",
+          "// collection scope, so newman's --env-var and a Postman",
+          "// environment would both trip this guard with a valid token.",
+          "if (!pm.variables.get('wrike_token')) {",
+          "    throw new Error('Set wrike_token as a collection or environment variable before running.');",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Postman runs collection-level AND request-level scripts - there is",
+          "// no override - so requests that expect something other than 200 have",
+          "// to be opted out here.",
+          "//",
+          "// Matched on a substring rather than the full name: these names use an",
+          "// em-dash, and an exact-match guard silently stops working the moment",
+          "// someone retypes one as a hyphen.",
+          "const name = pm.info.requestName;",
+          "const skip =",
+          "    name.includes('Auth check') ||",
+          "    (name.includes('page two') && !pm.collectionVariables.get('next_page_token'));",
+          "",
+          "if (!skip) {",
+          "    pm.test('responds 200', function () {",
+          "        pm.response.to.have.status(200);",
+          "    });",
+          "",
+          "    pm.test('payload has a data array', function () {",
+          "        const body = pm.response.json();",
+          "        pm.expect(body).to.have.property('data');",
+          "        pm.expect(body.data).to.be.an('array');",
+          "    });",
+          "",
+          "    pm.test('responds in under 2s', function () {",
+          "        pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Contacts \u2014 active people",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/contacts?deleted=false",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "contacts"
+          ],
+          "query": [
+            {
+              "key": "deleted",
+              "value": "false",
+              "description": "Exclude deactivated accounts server-side. Note there is deliberately no pageSize here: /contacts returns the full set in one response and rejects pagination parameters."
+            }
+          ]
+        },
+        "description": "Mirrors WrikeClient.get_contacts(). The Python side then drops group records and collaborators, because neither carries delivery work."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const data = pm.response.json().data;",
+              "const person = data.find(c => c.type === 'Person');",
+              "",
+              "pm.test('contacts carry the fields the capacity model joins on', function () {",
+              "    pm.expect(data.length, 'no contacts returned').to.be.above(0);",
+              "    pm.expect(person, 'no Person records found').to.not.be.undefined;",
+              "    pm.expect(person).to.have.property('id');",
+              "    pm.expect(person).to.have.property('firstName');",
+              "});",
+              "",
+              "pm.test('no pageSize was sent (this endpoint rejects it)', function () {",
+              "    pm.expect(pm.request.url.query.has('pageSize')).to.be.false;",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks \u2014 active with effort",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/tasks?fields=[\"effortAllocation\",\"responsibleIds\"]&status=Active&pageSize={{page_size}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tasks"
+          ],
+          "query": [
+            {
+              "key": "fields",
+              "value": "[\"effortAllocation\",\"responsibleIds\"]",
+              "description": "Optional fields must be requested explicitly. `dates` is deliberately absent: it is returned by default, and naming a default field here earns an HTTP 400."
+            },
+            {
+              "key": "status",
+              "value": "Active",
+              "description": "Completed and cancelled work is not a current load."
+            },
+            {
+              "key": "pageSize",
+              "value": "{{page_size}}",
+              "description": "This endpoint paginates. Page two onward must not resend `fields` or `status` - the token already encodes them - but pageSize is still sent."
+            }
+          ]
+        },
+        "description": "Mirrors WrikeClient.get_tasks(). effortAllocation.totalEffort is in minutes and is the input to every capacity calculation."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "const data = body.data;",
+              "",
+              "pm.test('effortAllocation is actually returned', function () {",
+              "    // The field the whole capacity model rests on. If Wrike stops",
+              "    // returning it, the Python tool does not crash - it silently",
+              "    // defaults every task to 4 hours and produces a plausible,",
+              "    // wrong report. That is the failure worth an assertion.",
+              "    const withEffort = data.filter(t => t.effortAllocation);",
+              "    pm.expect(withEffort.length, 'no task returned effortAllocation').to.be.above(0);",
+              "    pm.expect(withEffort[0].effortAllocation).to.have.property('totalEffort');",
+              "});",
+              "",
+              "pm.test('responsibleIds is present so tasks can be joined to people', function () {",
+              "    pm.expect(data.some(t => Array.isArray(t.responsibleIds))).to.be.true;",
+              "});",
+              "",
+              "pm.test('dates was not requested via fields', function () {",
+              "    // Requesting a default field returns 400. Read the parsed query",
+              "    // value: getQueryString() does not percent-encode, so checking",
+              "    // for '%22dates%22' could never fail.",
+              "    pm.expect(pm.request.url.query.get('fields') || '').to.not.include('dates');",
+              "});",
+              "",
+              "if (body.nextPageToken) {",
+              "    pm.collectionVariables.set('next_page_token', body.nextPageToken);",
+              "} else {",
+              "    pm.collectionVariables.unset('next_page_token');",
+              "    console.log('Single page of tasks; the page-two request will be skipped.');",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks \u2014 page two (no filters resent)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/tasks?nextPageToken={{next_page_token}}&pageSize={{page_size}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "tasks"
+          ],
+          "query": [
+            {
+              "key": "nextPageToken",
+              "value": "{{next_page_token}}",
+              "description": "Set automatically by the previous request when a second page exists."
+            },
+            {
+              "key": "pageSize",
+              "value": "{{page_size}}"
+            }
+          ]
+        },
+        "description": "Demonstrates the pagination rule that is easy to get wrong: the token already encodes the original query, so `fields` and `status` must not be resent alongside it. Automatically skipped when the previous request reported a single page."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('the original filters were not resent with the token', function () {",
+              "    const qs = pm.request.url.getQueryString();",
+              "    pm.expect(qs).to.not.include('fields');",
+              "    pm.expect(qs).to.not.include('status');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth check \u2014 bad token returns 401",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "definitely-not-a-valid-token",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/contacts",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "contacts"
+          ]
+        },
+        "description": "A negative test. The Python client maps 401 and 403 to WrikeAuthError and exits 5; this confirms Wrike really does answer 401 for a bad token rather than, say, an empty 200."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// The collection-level 200 check opts this request out by name.",
+              "pm.test('a bad token is rejected with 401', function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

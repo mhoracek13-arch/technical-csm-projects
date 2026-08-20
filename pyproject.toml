@@ -16,16 +16,18 @@ dev = ["pytest>=7.4"]
 
 [project.scripts]
 capacity-guardian = "capacity_guardian.cli:main"
+success-plan = "success_plan.cli:main"
 
 [tool.setuptools]
 # Named explicitly. Without this, setuptools sees two top-level packages in
 # a flat layout (capacity_guardian and demos) and refuses to guess, so
 # `pip install .` fails outright. Only the tool is installable; the demos
 # are meant to be run from the repo.
-packages = ["capacity_guardian"]
+packages = ["capacity_guardian", "success_plan"]
 
 [tool.setuptools.package-data]
 capacity_guardian = ["fixtures/*.json"]
+success_plan = ["briefs/*.json"]
 
 [tool.pytest.ini_options]
 # Run pytest from the repo root and imports resolve without a src layout

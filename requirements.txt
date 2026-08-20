@@ -1,0 +1,5 @@
+# Runtime
+requests>=2.31,<3
+
+# Development
+pytest>=7.4

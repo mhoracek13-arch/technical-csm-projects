@@ -1,0 +1,79 @@
+{
+  "name": "Nordic Finance Group",
+  "segment": "Enterprise — Financial Services",
+  "arr": 95000,
+  "renewal_date": "2026-11-30",
+  "csm": "Milan Horacek",
+
+  "adoption": {
+    "licences_purchased": 250,
+    "licences_active": 128,
+    "weekly_active_users": 74,
+    "trend": "declining"
+  },
+
+  "stakeholders": [
+    {
+      "name": "Ingrid Lund",
+      "role": "champion",
+      "title": "Head of PMO",
+      "sentiment": "positive"
+    },
+    {
+      "name": "Petter Aas",
+      "role": "end_user",
+      "title": "Programme Manager",
+      "sentiment": "neutral"
+    },
+    {
+      "name": "Sofia Berg",
+      "role": "blocker",
+      "title": "Director of IT Security",
+      "sentiment": "negative"
+    }
+  ],
+
+  "objectives": [
+    {
+      "statement": "Cut monthly reporting effort for the PMO",
+      "metric": "hours spent compiling the monthly report",
+      "baseline": "32 hours",
+      "target": "under 10 hours",
+      "owner": "Ingrid Lund"
+    },
+    {
+      "statement": "Give the executive team one view of programme status",
+      "metric": "",
+      "baseline": "",
+      "target": "",
+      "owner": "Ingrid Lund"
+    },
+    {
+      "statement": "Reduce time spent chasing status updates",
+      "metric": "weekly active users in the workspace",
+      "baseline": "",
+      "target": "180",
+      "owner": ""
+    }
+  ],
+
+  "risks": [
+    {
+      "description": "IT Security has not signed off the SSO configuration",
+      "severity": "high",
+      "mitigation": "",
+      "owner": "Sofia Berg"
+    },
+    {
+      "description": "Only one of four business units has onboarded",
+      "severity": "medium",
+      "mitigation": "Phase 2 onboarding workshop scheduled for October",
+      "owner": "Ingrid Lund"
+    }
+  ],
+
+  "open_escalations": 2,
+  "sponsor_changed_recently": true,
+
+  "notes": "Original sponsor (CFO) left in June. Ingrid is supportive but does not hold budget. Security sign-off is the critical path for the remaining three business units."
+}

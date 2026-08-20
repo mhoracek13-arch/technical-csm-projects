@@ -33,7 +33,7 @@ jobs:
       - name: Run tests
         run: python -m pytest
 
-          - name: Smoke-test the CLI and demos
+     - name: Smoke-test the CLI and demos
         # The bundled fixtures contain an overload the team cannot absorb, so
         # the documented exit code is 1, not 0. Assert exact codes rather than
         # tolerating any failure: a permissive "|| true" would happily pass
